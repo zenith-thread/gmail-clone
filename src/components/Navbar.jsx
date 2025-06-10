@@ -23,6 +23,7 @@ const Navbar = () => {
       <div className="md:block hidden rounded-full w-[38%] mr-[30%]">
         <div className="flex items-center bg-[#606060] text-[#EAEAEA] px-4 py-3 rounded-full">
           <IoIosSearch size="24px" className="text-[#EAEAEA]" />
+
           <input
             type="text"
             className="rounded-full outline-none bg-transparent w-full font-medium px-3"

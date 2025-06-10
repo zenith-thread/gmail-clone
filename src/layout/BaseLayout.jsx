@@ -2,7 +2,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { Outlet } from "react-router";
 
-const Body = () => {
+const BaseLayout = () => {
   return (
     <div className="flex flex-col">
       <Navbar />
@@ -14,4 +14,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default BaseLayout;
