@@ -1,3 +1,4 @@
+import { useState } from "react";
 // components
 import InboxIconCreator from "../components/InboxIconCreator";
 import Emails from "../components/Emails";
@@ -15,35 +16,46 @@ import { IoMdRefresh } from "react-icons/io";
 import { HiDotsVertical } from "react-icons/hi";
 import { RiInboxFill } from "react-icons/ri";
 import { GoTag } from "react-icons/go";
-import { useState } from "react";
-const Inbox = () => {
-  const mailType = [
-    {
-      id: 0,
-      icon: <RiInboxFill size="18px" />,
-      text: "Primary",
-    },
-    {
-      id: 1,
-      icon: <GoTag size="18px" />,
-      text: "Promotions",
-    },
-    {
-      id: 2,
-      icon: <MdOutlinePeopleAlt size="18px" />,
-      text: "Social",
-    },
-    {
-      id: 3,
-      icon: <MdOutlineForum size="18px" />,
-      text: "Forums",
-    },
-  ];
 
+// REDUX
+import { useDispatch } from "react-redux";
+import { getEmailAsync } from "../redux/composeEmail/composeEmail.reducer";
+
+const mailType = [
+  {
+    id: 0,
+    icon: <RiInboxFill size="18px" />,
+    text: "Primary",
+  },
+  {
+    id: 1,
+    icon: <GoTag size="18px" />,
+    text: "Promotions",
+  },
+  {
+    id: 2,
+    icon: <MdOutlinePeopleAlt size="18px" />,
+    text: "Social",
+  },
+  {
+    id: 3,
+    icon: <MdOutlineForum size="18px" />,
+    text: "Forums",
+  },
+];
+
+const Inbox = () => {
   const [mailTypeSelected, setMailTypeSelected] = useState(0);
 
   const handleMailType = (id) => {
     setMailTypeSelected(id);
+  };
+
+  // REDUX
+  const dispatch = useDispatch();
+
+  const reFetchEmails = () => {
+    dispatch(getEmailAsync());
   };
 
   return (
@@ -69,6 +81,7 @@ const Inbox = () => {
           {/* LAST TWO ICONS */}
           <div className="flex items-center gap-3">
             <InboxIconCreator
+              onClick={reFetchEmails}
               InboxIcon={IoMdRefresh}
               iconSize="18px"
               classes="p-2 rounded-full"

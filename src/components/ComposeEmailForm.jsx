@@ -2,7 +2,7 @@ import { useState } from "react";
 
 // REDUX
 import { useDispatch } from "react-redux";
-import { setComposeEmail } from "../redux/composeEmail/composeEmail.reducer";
+import { sendEmailAsync } from "../redux/composeEmail/composeEmail.reducer";
 
 const defaultFormFields = {
   receiver: "",
@@ -11,13 +11,6 @@ const defaultFormFields = {
 };
 
 const ComposeEmailForm = () => {
-  // REDUX
-  const dispatch = useDispatch();
-
-  const closeComposeEmailHanlder = () => {
-    dispatch(setComposeEmail(false));
-  };
-
   // LOCAL STATE
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { receiver, subject, message } = formFields;
@@ -28,12 +21,20 @@ const ComposeEmailForm = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const submitHandler = (e) => {
+  // REDUX
+  const dispatch = useDispatch();
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    closeComposeEmailHanlder();
-    console.log(formFields);
+    try {
+      dispatch(sendEmailAsync(formFields));
+      setFormFields(defaultFormFields);
+    } catch (err) {
+      console.error("Email failed: ", err);
+    }
   };
+
   return (
     <form onSubmit={submitHandler} className="flex flex-col p-3 gap-2">
       <input

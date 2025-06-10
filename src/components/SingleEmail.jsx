@@ -6,10 +6,19 @@ import { useNavigate } from "react-router";
 // components
 // import IconCreactor from "./IconCreactor";
 
-const SingleEmail = () => {
+// REDUX
+import { useDispatch } from "react-redux";
+import { setSelectedEmail } from "../redux/composeEmail/composeEmail.reducer";
+
+const SingleEmail = ({ email }) => {
+  const { message, id, createdAt } = email;
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const openMail = () => {
-    navigate("/mail/123456");
+    dispatch(setSelectedEmail(email));
+    navigate(`/mail/${id}`);
   };
 
   return (
@@ -29,15 +38,11 @@ const SingleEmail = () => {
         </div>
       </div>
       <div className="flex-1 ml-4 min-w-0 px-4">
-        <p className="text-gray-600 truncate">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et
-          praesentium saepe perferendis asperiores inventore, odit eum iusto
-          tenetur, autem optio a aliquam itaque? Ratione eligendi cumque,
-          adipisci sit saepe at amet, et temporibus libero quis totam nemo ex,
-          nesciunt mollitia?
-        </p>
+        <p className="text-gray-600 truncate">{message}</p>
       </div>
-      <div className="flex-none text-gray-400 text-sm">24:03</div>
+      <div className="flex-none text-gray-400 text-sm">
+        <span>{new Date(createdAt.seconds * 1000).toUTCString()}</span>
+      </div>
     </div>
   );
 };

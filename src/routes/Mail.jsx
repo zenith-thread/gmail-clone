@@ -15,11 +15,27 @@ import { BiArchiveIn } from "react-icons/bi";
 import InboxIconCreator from "../components/InboxIconCreator";
 import { useNavigate } from "react-router";
 
+// REDUX
+import { useSelector, useDispatch } from "react-redux";
+import { selectSelectedEmail } from "../redux/composeEmail/composeEmail.selector";
+import { deleteEmailAsync } from "../redux/composeEmail/composeEmail.reducer";
+
 const Mail = () => {
   const navigate = useNavigate();
 
   const previousNavigateHandler = () => {
     navigate("/");
+  };
+
+  // REDUX
+  const dispatch = useDispatch();
+
+  const email = useSelector(selectSelectedEmail);
+  const { subject, message, createdAt, id } = email;
+
+  const deleteEmailHandler = () => {
+    dispatch(deleteEmailAsync(id));
+    previousNavigateHandler();
   };
 
   return (
@@ -41,6 +57,7 @@ const Mail = () => {
           />
 
           <InboxIconCreator
+            onClick={deleteEmailHandler}
             InboxIcon={MdDeleteOutline}
             iconSize="20px"
             classes="p-2 rounded-full"
@@ -88,14 +105,14 @@ const Mail = () => {
       </div>
 
       {/* MAIL BODY */}
-      <div className="h-[86vh] overflow-y-scroll p-4 bg-white">
+      <div className="h-[86vh] overflow-y-scroll p-4 bg-white rounded-b-2xl">
         <div className="flex items-center justify-between gap-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-medium">Subject</h1>
+            <h1 className="text-xl font-medium">{subject}</h1>
             <span className="text-sm bg-gray-200 rounded-md px-2">Inbox</span>
           </div>
           <div className="flex-none text-gray-400 my-5 text-sm">
-            <p>12-06-2024</p>
+            <p>{new Date(createdAt.seconds * 1000).toUTCString()}</p>
           </div>
         </div>
         <div className="text-gray-500 text-sm ">
@@ -103,7 +120,7 @@ const Mail = () => {
           <span>to me</span>
         </div>
         <div className="my-10">
-          <p>message</p>
+          <p>{message}</p>
         </div>
       </div>
     </div>
