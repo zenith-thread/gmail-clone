@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   status: "idle", // idle | loading | succeeded | failed
   error: null,
   selectedEmail: {},
+  searchField: "",
 };
 
 // Thunk: sends email and returns the new doc ID
@@ -63,6 +64,9 @@ export const composeEmailSlice = createSlice({
     setSelectedEmail: (state, action) => {
       state.selectedEmail = action.payload;
     },
+    setSearchInputValue: (state, action) => {
+      state.searchField = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,5 +110,6 @@ export const composeEmailSlice = createSlice({
   },
 });
 
-export const { setComposeEmail, setSelectedEmail } = composeEmailSlice.actions;
+export const { setComposeEmail, setSelectedEmail, setSearchInputValue } =
+  composeEmailSlice.actions;
 export const composeEmailReducer = composeEmailSlice.reducer;

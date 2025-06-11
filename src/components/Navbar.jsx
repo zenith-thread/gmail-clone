@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // Components
 import IconCreactor from "./IconCreactor";
 
@@ -8,7 +10,19 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { IoSettingsOutline } from "react-icons/io5";
 import { PiDotsNineBold } from "react-icons/pi";
 
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchInputValue } from "../redux/composeEmail/composeEmail.reducer";
+import { selectSearchField } from "../redux/composeEmail/composeEmail.selector";
+
 const Navbar = () => {
+  // REDUX
+  const dispatch = useDispatch();
+  const searchField = useSelector(selectSearchField);
+
+  const searchFieldHandler = (e) => {
+    dispatch(setSearchInputValue(e.target.value));
+  };
   return (
     <div className="flex items-center justify-between mx-3 h-16 ">
       {/* Left side for hamburger icon and logo */}
@@ -25,6 +39,8 @@ const Navbar = () => {
           <IoIosSearch size="24px" className="text-[#EAEAEA]" />
 
           <input
+            onChange={searchFieldHandler}
+            value={searchField}
             type="text"
             className="rounded-full outline-none bg-transparent w-full font-medium px-3"
           />

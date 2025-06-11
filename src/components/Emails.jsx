@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import {
   selectEmailsFromState,
   selectEmailRequestError,
   selectEmailRequestStatus,
+  selectSearchField,
 } from "../redux/composeEmail/composeEmail.selector";
 
 // COMPONENTS
@@ -22,15 +23,29 @@ const Emails = () => {
   const emails = useSelector(selectEmailsFromState);
   const status = useSelector(selectEmailRequestStatus);
   const error = useSelector(selectEmailRequestError);
+  const searchField = useSelector(selectSearchField);
+
+  // Temp Emails
+  const [tempEmails, setTempEmails] = useState(emails);
+
+  useEffect(() => {
+    const filteredEmails = emails.filter(
+      (email) =>
+        email?.subject.toLowerCase().includes(searchField.toLowerCase()) ||
+        email?.receiver.toLowerCase().includes(searchField.toLowerCase()) ||
+        email?.message.toLowerCase().includes(searchField.toLowerCase())
+    );
+
+    setTempEmails(filteredEmails);
+  }, [searchField, emails]);
 
   if (error) return <>Error {error}</>;
   if (status === "loading") return <>Loading Emails...</>;
 
   return (
     <>
-      {emails.map((email) => (
-        <SingleEmail key={email.id} email={email} />
-      ))}
+      {tempEmails &&
+        tempEmails.map((email) => <SingleEmail key={email.id} email={email} />)}
     </>
   );
 };
