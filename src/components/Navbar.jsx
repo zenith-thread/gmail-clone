@@ -2,6 +2,7 @@ import { useState } from "react";
 
 // Components
 import IconCreactor from "./IconCreactor";
+import Dropdown from "./Dropdown";
 
 // React Icons
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -14,11 +15,19 @@ import { PiDotsNineBold } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchInputValue } from "../redux/composeEmail/composeEmail.reducer";
 import { selectSearchField } from "../redux/composeEmail/composeEmail.selector";
+import { selectCurrentUser } from "../redux/user/user.selector";
 
 const Navbar = () => {
+  const [dropdown, setDropdown] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdown(!dropdown);
+  };
+
   // REDUX
   const dispatch = useDispatch();
   const searchField = useSelector(selectSearchField);
+  const { photoURL } = useSelector(selectCurrentUser);
 
   const searchFieldHandler = (e) => {
     dispatch(setSearchInputValue(e.target.value));
@@ -56,13 +65,19 @@ const Navbar = () => {
           />
           <IconCreactor IconComponent={IoSettingsOutline} sizeOfIcon="24px" />
           <IconCreactor IconComponent={PiDotsNineBold} sizeOfIcon="24px" />
-          <div className="flex items-center justify-center cursor-pointer hover:bg-[#545455] h-12 w-12 rounded-full">
+
+          {/* Avatar */}
+          <div
+            onClick={toggleDropdown}
+            className="flex items-center justify-center cursor-pointer hover:bg-[#545455] h-12 w-12 rounded-full"
+          >
             <img
-              src="https://img.freepik.com/premium-vector/side-face-man-silhouette-set-vector-illustration_1004393-125.jpg?semt=ais_hybrid&w=740"
+              src={photoURL}
               className="rounded-full w-9 h-9"
               alt="Profile Avatar"
             />
           </div>
+          {dropdown && <Dropdown />}
         </div>
       </div>
     </div>

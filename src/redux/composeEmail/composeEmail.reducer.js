@@ -17,10 +17,14 @@ const INITIAL_STATE = {
 // Thunk: sends email and returns the new doc ID
 export const sendEmailAsync = createAsyncThunk(
   "composeEmail/sendEmail",
-  async (emailFormInputs, thunkAPI) => {
+  async ({ emailFormInputs, from }, thunkAPI) => {
+    console.log("🔥 sendEmailAsync called with:", emailFormInputs, from);
     try {
-      await createEmailInFirebase(emailFormInputs);
+      const emailRef = await createEmailInFirebase(emailFormInputs, from);
+      console.log("📝 emailRef returned:", emailRef);
+      return emailRef.id;
     } catch (err) {
+      console.error("💥 sendEmailAsync caught error:", err);
       return thunkAPI.rejectWithValue(err.message || "Failed to send email");
     }
   }
@@ -28,9 +32,9 @@ export const sendEmailAsync = createAsyncThunk(
 
 export const getEmailAsync = createAsyncThunk(
   "composeEmail/getEmails",
-  async (_, thunkAPI) => {
+  async (email, thunkAPI) => {
     try {
-      const emails = await getEmailsFromFirebase();
+      const emails = await getEmailsFromFirebase(email);
       return emails;
     } catch (err) {
       return thunkAPI.rejectWithValue(

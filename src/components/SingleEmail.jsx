@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { setSelectedEmail } from "../redux/composeEmail/composeEmail.reducer";
 
 const SingleEmail = ({ email }) => {
-  const { message, id, createdAt } = email;
+  const { message, id, createdAt, sender } = email;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,6 +37,7 @@ const SingleEmail = ({ email }) => {
           <MdOutlineDoubleArrow className="w-5 h-5" />
         </div>
       </div>
+      <div className="flex-none px-4">{sender}</div>
       <div className="flex-1 ml-4 min-w-0 px-4">
         <p className="text-gray-600 truncate">{message}</p>
       </div>

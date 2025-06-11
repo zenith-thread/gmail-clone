@@ -18,8 +18,9 @@ import { RiInboxFill } from "react-icons/ri";
 import { GoTag } from "react-icons/go";
 
 // REDUX
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getEmailAsync } from "../redux/composeEmail/composeEmail.reducer";
+import { selectCurrentUser } from "../redux/user/user.selector";
 
 const mailType = [
   {
@@ -53,9 +54,10 @@ const Inbox = () => {
 
   // REDUX
   const dispatch = useDispatch();
+  const { email } = useSelector(selectCurrentUser);
 
   const reFetchEmails = () => {
-    dispatch(getEmailAsync());
+    dispatch(getEmailAsync(email));
   };
 
   return (

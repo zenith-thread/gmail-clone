@@ -31,7 +31,7 @@ const Mail = () => {
   const dispatch = useDispatch();
 
   const email = useSelector(selectSelectedEmail);
-  const { subject, message, createdAt, id, receiver } = email;
+  const { subject, message, createdAt, id, sender } = email;
 
   const deleteEmailHandler = () => {
     dispatch(deleteEmailAsync(id));
@@ -116,7 +116,7 @@ const Mail = () => {
           </div>
         </div>
         <div className="text-gray-500 text-sm ">
-          <h1>{receiver}</h1>
+          <h1>{sender}</h1>
           <span>to me</span>
         </div>
         <div className="my-10">

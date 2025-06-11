@@ -12,12 +12,14 @@ import {
 
 // COMPONENTS
 import SingleEmail from "./SingleEmail";
+import { selectCurrentUser } from "../redux/user/user.selector";
 
 const Emails = () => {
   const dispatch = useDispatch();
+  const { email } = useSelector(selectCurrentUser);
 
   useEffect(() => {
-    dispatch(getEmailAsync());
+    dispatch(getEmailAsync(email));
   }, []);
 
   const emails = useSelector(selectEmailsFromState);

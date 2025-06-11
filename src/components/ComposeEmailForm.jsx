@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 // REDUX
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sendEmailAsync } from "../redux/composeEmail/composeEmail.reducer";
+import { selectCurrentUser } from "../redux/user/user.selector";
 
 const defaultFormFields = {
   receiver: "",
@@ -23,12 +24,20 @@ const ComposeEmailForm = () => {
 
   // REDUX
   const dispatch = useDispatch();
+  const { email, uid } = useSelector(selectCurrentUser);
+  const sender = email;
+  const senderID = uid;
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      dispatch(sendEmailAsync(formFields));
+      dispatch(
+        sendEmailAsync({
+          emailFormInputs: formFields,
+          from: { sender, senderID },
+        })
+      );
       setFormFields(defaultFormFields);
     } catch (err) {
       console.error("Email failed: ", err);

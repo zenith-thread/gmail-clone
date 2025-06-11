@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 import {
   getFirestore,
   serverTimestamp,
@@ -13,6 +19,8 @@ import {
   where,
   updateDoc,
   deleteDoc,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -37,11 +45,23 @@ provider.setCustomParameters({
   prompt: "select_account",
 });
 
+export const signInUserWithGooglePopup = async () => {
+  const result = await signInWithPopup(auth, provider);
+};
+
+export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);
+
 // Firestore db
 export const db = getFirestore(app);
 
 // create Emails
-export const createEmailInFirebase = async (emailFormInputsToAdd = {}) => {
+export const createEmailInFirebase = async (
+  emailFormInputsToAdd = {},
+  from = {}
+) => {
   if (!emailFormInputsToAdd || Object.keys(emailFormInputsToAdd).length === 0) {
     console.log("Input fields were empty!");
     return;
@@ -52,6 +72,7 @@ export const createEmailInFirebase = async (emailFormInputsToAdd = {}) => {
 
     const emailReference = await addDoc(collectionReference, {
       ...emailFormInputsToAdd,
+      ...from,
       createdAt: serverTimestamp(),
       deleted: false,
     });
@@ -64,11 +85,13 @@ export const createEmailInFirebase = async (emailFormInputsToAdd = {}) => {
 
 // fetch Emails
 
-export const getEmailsFromFirebase = async () => {
+export const getEmailsFromFirebase = async (email = "") => {
   const collectionReferece = collection(db, "emails");
+  console.log("RECEIVER WENT IN THE FIREBASE FUNCTION: ", email);
   const q = query(
     collectionReferece,
     where("deleted", "==", false),
+    where("receiver", "==", email),
     orderBy("createdAt", "desc")
   );
 
@@ -93,4 +116,31 @@ export const hardDeleteEmailInFirebase = async (emailId) => {
 
   const emailDocRef = doc(db, "emails", emailId);
   await deleteDoc(emailDocRef);
+};
+
+// create user in firebase
+
+export const createUserInFirebase = async (userAuth, additionalParams = {}) => {
+  if (!userAuth) return;
+
+  const userDocRef = doc(db, "users", userAuth.uid);
+  const userSnapshot = await getDoc(userDocRef);
+
+  if (!userSnapshot.exists()) {
+    const { displayName, email, photoURL } = userAuth;
+    const createdAt = serverTimestamp();
+
+    try {
+      await setDoc(userDocRef, {
+        displayName,
+        email,
+        photoURL,
+        createdAt,
+      });
+    } catch (err) {
+      console.log("ERROR creating the user", err.message);
+    }
+  }
+
+  return userDocRef;
 };
